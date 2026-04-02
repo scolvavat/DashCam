@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict/>
+    </array>
+
+    <key>NSCameraUsageDescription</key>
+    <string>This app needs camera access to record dashcam video.</string>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs location access to stamp GPS coordinates on recordings.</string>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app needs permission to save dashcam clips to your Photos library.</string>
+
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app needs microphone access to record audio with dashcam clips.</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs access to your Photos library to import or review saved clips.</string>
+
+    <key>NSMotionUsageDescription</key>
+    <string>This app needs motion data to detect sudden impacts and driving events.</string>
+
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>This app needs local network access to transfer dashcam clips to devices on your network.</string>
+
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>This app uses Bluetooth to connect to supported accessories.</string>
+</dict>
+</plist>
