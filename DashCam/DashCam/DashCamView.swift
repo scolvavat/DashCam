@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import MapKit
+import Network
+import Combine
 
 // main dashcam screen
 
@@ -22,6 +25,7 @@ struct DashCamView: View {
     // this owns the camera session, recorder, loop logic, speed logic, and every piece of live app state the UI reads
     
     @StateObject private var camera = DashCamController()
+    @StateObject private var networkMonitor = DashNetworkMonitor()
     
     // clips sheet toggle
     
@@ -40,6 +44,8 @@ struct DashCamView: View {
     // this lets the view tell the controller when the app leaves or returns to the foreground
     
     @Environment(\.scenePhase) private var scenePhase
+    @State private var mapPosition: MapCameraPosition = .userLocation(followsHeading: true, fallback: .automatic)
+    @State private var hasCenteredMap = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -56,12 +62,13 @@ struct DashCamView: View {
                 
                 Color.black.ignoresSafeArea()
                 
-                // rear camera preview
-                
-                // this is the main live camera feed and always sits behind everything else
-                
-                RearCameraPreview(controller: camera)
-                    .ignoresSafeArea()
+                if camera.showMapBackground {
+                    dashMapBackground
+                        .ignoresSafeArea()
+                } else {
+                    RearCameraPreview(controller: camera)
+                        .ignoresSafeArea()
+                }
                 
                 // optional front pip preview
                 
@@ -87,6 +94,7 @@ struct DashCamView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
+                guard !camera.showMapBackground else { return }
                 camera.captureRearPhoto()
             }
         }
@@ -109,6 +117,16 @@ struct DashCamView: View {
         .onChange(of: scenePhase) { _, newPhase in
             camera.handleScenePhaseChange(newPhase)
         }
+        .onReceive(camera.locationManager.$currentCoordinate) { newCoordinate in
+            guard !hasCenteredMap, let coordinate = newCoordinate else { return }
+            mapPosition = .region(
+                MKCoordinateRegion(
+                    center: coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
+                )
+            )
+            hasCenteredMap = true
+        }
         
         // clips browser sheet
         
@@ -129,6 +147,18 @@ struct DashCamView: View {
         } message: {
             Text(camera.alertMessage)
         }
+    }
+
+    private var dashMapBackground: some View {
+        Map(position: $mapPosition, interactionModes: [.pan, .zoom, .rotate, .pitch]) {
+            UserAnnotation()
+
+            if camera.locationManager.breadcrumbCoordinates.count > 1 {
+                MapPolyline(coordinates: camera.locationManager.breadcrumbCoordinates)
+                    .stroke(.cyan.opacity(0.85), lineWidth: 4)
+            }
+        }
+        .mapStyle(.standard(elevation: .flat))
     }
 
     private func compassOverlay(text: String) -> some View {
@@ -219,7 +249,9 @@ struct DashCamView: View {
                 Spacer()
                 HStack(spacing: 12) {
                     clipsButton
+                    lensButton
                     recordButton
+                    mapModeButton
                     settingsButton
                 }
             }
@@ -243,7 +275,9 @@ struct DashCamView: View {
             VStack(spacing: 14) {
                 HStack(spacing: 12) {
                     clipsButton
+                    lensButton
                     recordButton
+                    mapModeButton
                     settingsButton
                 }
                 if camera.showMainExtraInfo {
@@ -289,6 +323,10 @@ struct DashCamView: View {
             }
             
             infoRow(camera.liveStampText)
+
+            if camera.showMapBackground, !networkMonitor.isOnline {
+                infoRow("Offline mode • using cached map tiles")
+            }
 
             if camera.detailText == "Rear photo saved locally." {
                 infoRow(camera.detailText)
@@ -347,6 +385,33 @@ struct DashCamView: View {
         }
     }
 
+    private var mapModeButton: some View {
+        Button {
+            camera.showMapBackground.toggle()
+        } label: {
+            controlIcon(systemImage: camera.showMapBackground ? "camera.viewfinder" : "map")
+        }
+    }
+
+    private var lensButton: some View {
+        Button {
+            camera.toggleRearLens()
+        } label: {
+            Text(camera.rearLensButtonLabel)
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+                .frame(width: 54, height: 54)
+                .background(.black.opacity(0.55))
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(.white.opacity(camera.rearLens == .ultraWide ? 0.65 : 0.35), lineWidth: 1)
+                )
+        }
+        .disabled(!camera.canSwitchRearLens)
+        .opacity(camera.canSwitchRearLens ? 1 : 0.45)
+    }
+
     private func controlIcon(systemImage: String) -> some View {
         Image(systemName: systemImage)
             .font(.system(size: 20, weight: .semibold))
@@ -395,5 +460,29 @@ struct DashCamView: View {
         }
         .disabled(!camera.canRecord)
         .opacity(camera.canRecord ? 1 : 0.6)
+    }
+}
+
+// network monitor
+
+// this is lightweight and only drives a small offline map hint on the main screen
+
+final class DashNetworkMonitor: ObservableObject {
+    @Published var isOnline: Bool = true
+
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "dashcam.network.monitor")
+
+    init() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                self?.isOnline = path.status == .satisfied
+            }
+        }
+        monitor.start(queue: queue)
+    }
+
+    deinit {
+        monitor.cancel()
     }
 }

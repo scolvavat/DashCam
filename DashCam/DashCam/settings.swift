@@ -14,18 +14,7 @@ import SwiftUI
 // this file only depends on DashCamController and the enums already living in your main dashcam file
 
 struct DashCamSettingsView: View {
-    
-    private enum SettingsPicker: String, Identifiable {
-        case recordingMode
-        case quality
-        case frameRate
-        case clipLength
-        case storageCap
-        case autoStartThreshold
-        
-        var id: String { rawValue }
-    }
-    
+
     @ObservedObject var camera: DashCamController
     @Environment(\.dismiss) private var dismiss
 
@@ -36,6 +25,7 @@ struct DashCamSettingsView: View {
 
     @State private var draftRecordingMode: RecordingMode = .pipSingleFile
     @State private var draftQuality: DashVideoQuality = .p720
+    @State private var draftBitrateProfile: DashBitrateProfile = .balanced
     @State private var draftClipLength: DashClipLength = .s30
     @State private var draftStorageCap: DashStorageCap = .gb5
     @State private var draftFrameRate: DashFrameRate = .fps24
@@ -46,7 +36,7 @@ struct DashCamSettingsView: View {
     @State private var draftShowCompass: Bool = false
     @State private var draftShowMainStatusBadges: Bool = false
     @State private var draftShowMainExtraInfo: Bool = false
-    @State private var activePicker: SettingsPicker?
+    @State private var draftShowMapBackground: Bool = true
     
     var body: some View {
         NavigationStack {
@@ -72,23 +62,48 @@ struct DashCamSettingsView: View {
         .onAppear {
             syncDraftsFromCamera()
         }
-        .sheet(item: $activePicker) { picker in
-            pickerSheet(for: picker)
-        }
     }
     
     private var recordingSection: some View {
         Section {
-            settingsSelectionRow(title: "Recording mode", value: draftRecordingMode.label) {
-                activePicker = .recordingMode
+            Picker("Recording mode", selection: $draftRecordingMode) {
+                ForEach(RecordingMode.allCases) { mode in
+                    Text(mode.label).tag(mode)
+                }
+            }
+            .pickerStyle(.menu)
+            .onChange(of: draftRecordingMode) { _, newValue in
+                camera.recordingMode = newValue
             }
             
-            settingsSelectionRow(title: "Quality", value: draftQuality.label) {
-                activePicker = .quality
+            Picker("Quality", selection: $draftQuality) {
+                ForEach(DashVideoQuality.allCases) { quality in
+                    Text(quality.label).tag(quality)
+                }
+            }
+            .pickerStyle(.menu)
+            .onChange(of: draftQuality) { _, newValue in
+                camera.quality = newValue
             }
 
-            settingsSelectionRow(title: "Frame rate", value: draftFrameRate.label) {
-                activePicker = .frameRate
+            Picker("Frame rate", selection: $draftFrameRate) {
+                ForEach(DashFrameRate.allCases) { frameRate in
+                    Text(frameRate.label).tag(frameRate)
+                }
+            }
+            .pickerStyle(.menu)
+            .onChange(of: draftFrameRate) { _, newValue in
+                camera.frameRate = newValue
+            }
+
+            Picker("Bitrate", selection: $draftBitrateProfile) {
+                ForEach(DashBitrateProfile.allCases) { profile in
+                    Text(profile.label).tag(profile)
+                }
+            }
+            .pickerStyle(.menu)
+            .onChange(of: draftBitrateProfile) { _, newValue in
+                camera.bitrateProfile = newValue
             }
             
             settingsNote("Quality and mode changes apply to the next new segment or the next recording start.")
@@ -99,12 +114,24 @@ struct DashCamSettingsView: View {
     
     private var loopSection: some View {
         Section {
-            settingsSelectionRow(title: "Clip length", value: draftClipLength.label) {
-                activePicker = .clipLength
+            Picker("Clip length", selection: $draftClipLength) {
+                ForEach(DashClipLength.allCases) { clipLength in
+                    Text(clipLength.label).tag(clipLength)
+                }
+            }
+            .pickerStyle(.menu)
+            .onChange(of: draftClipLength) { _, newValue in
+                camera.clipLength = newValue
             }
             
-            settingsSelectionRow(title: "Storage cap", value: draftStorageCap.label) {
-                activePicker = .storageCap
+            Picker("Storage cap", selection: $draftStorageCap) {
+                ForEach(DashStorageCap.allCases) { storageCap in
+                    Text(storageCap.label).tag(storageCap)
+                }
+            }
+            .pickerStyle(.menu)
+            .onChange(of: draftStorageCap) { _, newValue in
+                camera.storageCap = newValue
             }
             
             settingsValueRow(title: "Current loop status", value: camera.loopStatusText)
@@ -115,15 +142,23 @@ struct DashCamSettingsView: View {
     
     private var autoStartSection: some View {
         Section {
+            let thresholdValues = [5.0, 10.0, 15.0, 20.0, 25.0]
+
             Toggle("Auto start by speed", isOn: $draftAutoStartBySpeed)
                 .onChange(of: draftAutoStartBySpeed) { _, newValue in
                     camera.autoStartBySpeed = newValue
                 }
 
-            settingsSelectionRow(title: "Start threshold", value: "\(Int(draftAutoStartThresholdMPH)) mph") {
-                activePicker = .autoStartThreshold
+            Picker("Start threshold", selection: $draftAutoStartThresholdMPH) {
+                ForEach(thresholdValues, id: \.self) { mph in
+                    Text("\(Int(mph)) mph").tag(mph)
+                }
             }
+            .pickerStyle(.menu)
             .disabled(!draftAutoStartBySpeed)
+            .onChange(of: draftAutoStartThresholdMPH) { _, newValue in
+                camera.autoStartThresholdMPH = newValue
+            }
 
             settingsValueRow(title: "Live speed", value: camera.speedStatusText)
             settingsNote("Foreground only. If the app is backgrounded or closed, it stops recording and ignores speed updates.")
@@ -142,6 +177,11 @@ struct DashCamSettingsView: View {
             Toggle("Show front PiP preview", isOn: $draftShowFrontPreview)
                 .onChange(of: draftShowFrontPreview) { _, newValue in
                     camera.showFrontPreview = newValue
+                }
+
+            Toggle("Use map as main background", isOn: $draftShowMapBackground)
+                .onChange(of: draftShowMapBackground) { _, newValue in
+                    camera.showMapBackground = newValue
                 }
 
             Toggle("Show compass", isOn: $draftShowCompass)
@@ -219,129 +259,10 @@ struct DashCamSettingsView: View {
             .fixedSize(horizontal: false, vertical: true)
     }
 
-    private func settingsSelectionRow(title: String, value: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack {
-                Text(title)
-                    .foregroundStyle(.primary)
-                Spacer()
-                Text(value)
-                    .foregroundStyle(.secondary)
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    @ViewBuilder
-    private func pickerSheet(for picker: SettingsPicker) -> some View {
-        switch picker {
-        case .recordingMode:
-            selectionSheet(
-                title: "Recording mode",
-                rows: RecordingMode.allCases.map { SelectionRow(id: $0.id, title: $0.label, isSelected: draftRecordingMode == $0) },
-                onSelect: { id in
-                    guard let mode = RecordingMode.allCases.first(where: { $0.id == id }) else { return }
-                    draftRecordingMode = mode
-                    camera.recordingMode = mode
-                }
-            )
-        case .quality:
-            selectionSheet(
-                title: "Quality",
-                rows: DashVideoQuality.allCases.map { SelectionRow(id: $0.id, title: $0.label, isSelected: draftQuality == $0) },
-                onSelect: { id in
-                    guard let quality = DashVideoQuality.allCases.first(where: { $0.id == id }) else { return }
-                    draftQuality = quality
-                    camera.quality = quality
-                }
-            )
-        case .frameRate:
-            selectionSheet(
-                title: "Frame rate",
-                rows: DashFrameRate.allCases.map { SelectionRow(id: String($0.id), title: $0.label, isSelected: draftFrameRate == $0) },
-                onSelect: { id in
-                    guard let rawValue = Int(id), let frameRate = DashFrameRate(rawValue: rawValue) else { return }
-                    draftFrameRate = frameRate
-                    camera.frameRate = frameRate
-                }
-            )
-        case .clipLength:
-            selectionSheet(
-                title: "Clip length",
-                rows: DashClipLength.allCases.map { SelectionRow(id: String($0.id), title: $0.label, isSelected: draftClipLength == $0) },
-                onSelect: { id in
-                    guard let rawValue = Int(id), let clipLength = DashClipLength(rawValue: rawValue) else { return }
-                    draftClipLength = clipLength
-                    camera.clipLength = clipLength
-                }
-            )
-        case .storageCap:
-            selectionSheet(
-                title: "Storage cap",
-                rows: DashStorageCap.allCases.map { SelectionRow(id: String($0.id), title: $0.label, isSelected: draftStorageCap == $0) },
-                onSelect: { id in
-                    guard let rawValue = Int(id), let storageCap = DashStorageCap(rawValue: rawValue) else { return }
-                    draftStorageCap = storageCap
-                    camera.storageCap = storageCap
-                }
-            )
-        case .autoStartThreshold:
-            let values = [5.0, 10.0, 15.0, 20.0, 25.0]
-            selectionSheet(
-                title: "Start threshold",
-                rows: values.map { SelectionRow(id: String(Int($0)), title: "\(Int($0)) mph", isSelected: draftAutoStartThresholdMPH == $0) },
-                onSelect: { id in
-                    guard let mph = Double(id) else { return }
-                    draftAutoStartThresholdMPH = mph
-                    camera.autoStartThresholdMPH = mph
-                }
-            )
-        }
-    }
-
-    private func selectionSheet(title: String, rows: [SelectionRow], onSelect: @escaping (String) -> Void) -> some View {
-        NavigationStack {
-            List(rows) { row in
-                Button {
-                    onSelect(row.id)
-                    activePicker = nil
-                } label: {
-                    HStack {
-                        Text(row.title)
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        if row.isSelected {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.blue)
-                        }
-                    }
-                }
-                .buttonStyle(.plain)
-            }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
-                        activePicker = nil
-                    }
-                }
-            }
-        }
-    }
-
-    private struct SelectionRow: Identifiable {
-        let id: String
-        let title: String
-        let isSelected: Bool
-    }
-
     private func syncDraftsFromCamera() {
         draftRecordingMode = camera.recordingMode
         draftQuality = camera.quality
+        draftBitrateProfile = camera.bitrateProfile
         draftClipLength = camera.clipLength
         draftStorageCap = camera.storageCap
         draftFrameRate = camera.frameRate
@@ -349,6 +270,7 @@ struct DashCamSettingsView: View {
         draftAutoStartThresholdMPH = camera.autoStartThresholdMPH
         draftBurnStamp = camera.burnStamp
         draftShowFrontPreview = camera.showFrontPreview
+        draftShowMapBackground = camera.showMapBackground
         draftShowCompass = camera.showCompass
         draftShowMainStatusBadges = camera.showMainStatusBadges
         draftShowMainExtraInfo = camera.showMainExtraInfo

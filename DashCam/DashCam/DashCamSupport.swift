@@ -9,6 +9,7 @@ import SwiftUI
 import AVFoundation
 import CoreLocation
 import Combine
+import MapKit
 
 // preview bridge
 
@@ -174,13 +175,13 @@ enum DashVideoQuality: String, CaseIterable, Identifiable {
     var bitRate: Int {
         switch self {
         case .p480:
-            return 2_500_000
+            return 1_500_000
         case .p720:
-            return 5_500_000
+            return 3_000_000
         case .p1080:
-            return 10_000_000
+            return 6_000_000
         case .p4K:
-            return 24_000_000
+            return 14_000_000
         }
     }
     
@@ -199,6 +200,36 @@ enum DashVideoQuality: String, CaseIterable, Identifiable {
     
     var usesRearOnly4KBehavior: Bool {
         self == .p4K
+    }
+}
+
+// rear lens option
+
+// this controls which physical rear lens we target when configuring the session
+
+enum RearLensOption: String, CaseIterable, Identifiable {
+
+    case wide
+    case ultraWide
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .wide:
+            return "Rear 1x"
+        case .ultraWide:
+            return "Rear 0.5x"
+        }
+    }
+
+    var shortLabel: String {
+        switch self {
+        case .wide:
+            return "1x"
+        case .ultraWide:
+            return "0.5x"
+        }
     }
 }
 
@@ -228,6 +259,46 @@ enum DashFrameRate: Int, CaseIterable, Identifiable {
 
     var label: String {
         "\(rawValue) fps"
+    }
+}
+
+// bitrate profile
+
+// this lets you tune encoder load without changing resolution/fps settings
+
+enum DashBitrateProfile: String, CaseIterable, Identifiable {
+
+    case veryLow
+    case low
+    case balanced
+    case high
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .veryLow:
+            return "Very low"
+        case .low:
+            return "Low"
+        case .balanced:
+            return "Balanced"
+        case .high:
+            return "High"
+        }
+    }
+
+    var multiplier: Double {
+        switch self {
+        case .veryLow:
+            return 0.4
+        case .low:
+            return 0.55
+        case .balanced:
+            return 0.75
+        case .high:
+            return 1.0
+        }
     }
 }
 
@@ -366,6 +437,12 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
     // latest coordinate text used by the ui and the stamp line
     
     @Published var coordinateText: String = "GPS waiting..."
+
+    // latest raw coordinate used by map tracking
+
+    // nil means no fix has arrived yet
+
+    @Published var currentCoordinate: CLLocationCoordinate2D?
     
     // latest speed in meters per second
     
@@ -378,10 +455,18 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
     // nil means the device is not providing a reliable heading yet
 
     @Published var headingDegrees: Double?
+
+    // simple breadcrumb trail for map overlay
+
+    // this keeps a short route history locally so the map still has useful context even when tiles are offline
+
+    @Published var breadcrumbCoordinates: [CLLocationCoordinate2D] = []
     
     // apple location manager
     
     private let manager = CLLocationManager()
+    private let breadcrumbDistanceThreshold: CLLocationDistance = 8
+    private let breadcrumbMaxPoints: Int = 900
     
     // setup the manager once
     
@@ -409,6 +494,7 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
             manager.requestWhenInUseAuthorization()
         default:
             coordinateText = "GPS permission denied"
+            currentCoordinate = nil
             speedMetersPerSecond = nil
             headingDegrees = nil
         }
@@ -436,6 +522,7 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
             break
         default:
             coordinateText = "GPS permission denied"
+            currentCoordinate = nil
             speedMetersPerSecond = nil
             headingDegrees = nil
         }
@@ -448,7 +535,19 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         coordinateText = String(format: "%.5f, %.5f", location.coordinate.latitude, location.coordinate.longitude)
+        currentCoordinate = location.coordinate
         speedMetersPerSecond = location.speed >= 0 ? location.speed : nil
+
+        if let last = breadcrumbCoordinates.last {
+            let lastLocation = CLLocation(latitude: last.latitude, longitude: last.longitude)
+            let shouldAppend = location.distance(from: lastLocation) >= breadcrumbDistanceThreshold
+            guard shouldAppend else { return }
+        }
+
+        breadcrumbCoordinates.append(location.coordinate)
+        if breadcrumbCoordinates.count > breadcrumbMaxPoints {
+            breadcrumbCoordinates.removeFirst(breadcrumbCoordinates.count - breadcrumbMaxPoints)
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {

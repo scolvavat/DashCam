@@ -51,7 +51,13 @@ final class RecordingWriter {
     
     private(set) var hasFinished: Bool = false
     
-    init(url: URL, canvasSize: CGSize, quality: DashVideoQuality, includeAudio: Bool) throws {
+    init(
+        url: URL,
+        canvasSize: CGSize,
+        quality: DashVideoQuality,
+        includeAudio: Bool,
+        bitRateOverride: Int? = nil
+    ) throws {
         self.url = url
         self.canvasSize = canvasSize
         self.writer = try AVAssetWriter(outputURL: url, fileType: .mov)
@@ -61,6 +67,8 @@ final class RecordingWriter {
         let width = Int(canvasSize.width)
         let height = Int(canvasSize.height)
         
+        let bitRate = bitRateOverride ?? quality.bitRate
+
         // video output settings for the encoded movie file
         
         let videoSettings: [String: Any] = [
@@ -68,7 +76,7 @@ final class RecordingWriter {
             AVVideoWidthKey: width,
             AVVideoHeightKey: height,
             AVVideoCompressionPropertiesKey: [
-                AVVideoAverageBitRateKey: quality.bitRate,
+                AVVideoAverageBitRateKey: bitRate,
                 AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel
             ]
         ]
