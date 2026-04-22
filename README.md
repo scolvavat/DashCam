@@ -6,7 +6,7 @@ An iOS dashcam app
 ### 1) Run the temporary server on your Mac
 
 ```bash
-cd /Users/lenovothinkpad/Desktop/DashCam/server
+cd /Users/x/Desktop/DashCam/server
 npm install
 npm start
 ```
