@@ -92,9 +92,16 @@ extension DashCamController {
                 DispatchQueue.main.async {
                     self.isRunning = self.session.isRunning
                     self.resetCaptureReadiness(includeAudio: self.audioInput != nil)
-                    self.detailText = self.multiCamSupported ? "Rear preview live. Ready for PiP or dual-file recording." : "Rear preview live. MultiCam not supported on this device."
+                    if self.isFrontCameraCaptureActive {
+                        self.detailText = "Rear preview live. Ready for PiP or dual-file recording."
+                    } else if self.multiCamSupported {
+                        self.detailText = "Rear preview live. Front camera disabled for rear-only recording."
+                    } else {
+                        self.detailText = "Rear preview live. MultiCam not supported on this device."
+                    }
                     self.refreshLoopStatusText()
                     self.applyPreviewRotationNow()
+                    self.startAncillaryServicesIfNeeded()
                 }
             } catch {
                 DispatchQueue.main.async {
@@ -155,64 +162,87 @@ extension DashCamController {
             throw DashCamError.noRearCamera
         }
 
-        guard let frontDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
-            throw DashCamError.noFrontCamera
-        }
-
+        let includeFrontCamera = isFrontCameraCaptureActive
         let rearMaxWidth = quality.usesRearOnly4KBehavior ? Int32(quality.size.width) : Int32(quality.size.width)
-        let frontMaxWidth = frontTargetQuality.size.width
 
         try setMultiCamFormatIfPossible(
             for: rearDevice,
             maxWidth: rearMaxWidth,
             targetFrameRate: rearTargetFrameRate
         )
-        try setMultiCamFormatIfPossible(
-            for: frontDevice,
-            maxWidth: Int32(frontMaxWidth),
-            targetFrameRate: frontTargetFrameRate
-        )
 
         let rearInput = try AVCaptureDeviceInput(device: rearDevice)
-        let frontInput = try AVCaptureDeviceInput(device: frontDevice)
+        var frontInput: AVCaptureDeviceInput?
 
-        guard multiSession.canAddInput(rearInput), multiSession.canAddInput(frontInput) else {
+        if includeFrontCamera {
+            guard let frontDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+                throw DashCamError.noFrontCamera
+            }
+
+            try setMultiCamFormatIfPossible(
+                for: frontDevice,
+                maxWidth: Int32(frontTargetQuality.size.width),
+                targetFrameRate: frontTargetFrameRate
+            )
+
+            frontInput = try AVCaptureDeviceInput(device: frontDevice)
+        }
+
+        guard multiSession.canAddInput(rearInput) else {
+            throw DashCamError.couldNotAddInput
+        }
+        if let frontInput, !multiSession.canAddInput(frontInput) {
             throw DashCamError.couldNotAddInput
         }
 
         multiSession.addInputWithNoConnections(rearInput)
-        multiSession.addInputWithNoConnections(frontInput)
         self.rearVideoInput = rearInput
-        self.frontVideoInput = frontInput
+        self.frontVideoInput = nil
+
+        if let frontInput {
+            multiSession.addInputWithNoConnections(frontInput)
+            self.frontVideoInput = frontInput
+        }
 
         configureVideoOutput(rearVideoOutput)
-        configureVideoOutput(frontVideoOutput)
-
-        guard multiSession.canAddOutput(rearVideoOutput), multiSession.canAddOutput(frontVideoOutput) else {
+        guard multiSession.canAddOutput(rearVideoOutput) else {
             throw DashCamError.couldNotAddVideoOutput
         }
 
         multiSession.addOutputWithNoConnections(rearVideoOutput)
-        multiSession.addOutputWithNoConnections(frontVideoOutput)
+        if includeFrontCamera {
+            configureVideoOutput(frontVideoOutput)
+            guard multiSession.canAddOutput(frontVideoOutput) else {
+                throw DashCamError.couldNotAddVideoOutput
+            }
+            multiSession.addOutputWithNoConnections(frontVideoOutput)
+        }
 
-        guard let rearPort = rearInput.ports.first(where: { $0.mediaType == .video }),
-              let frontPort = frontInput.ports.first(where: { $0.mediaType == .video }) else {
+        guard let rearPort = rearInput.ports.first(where: { $0.mediaType == .video }) else {
             throw DashCamError.couldNotAddInput
         }
 
         let rearVideoConnection = AVCaptureConnection(inputPorts: [rearPort], output: rearVideoOutput)
-        let frontVideoConnection = AVCaptureConnection(inputPorts: [frontPort], output: frontVideoOutput)
 
-        guard multiSession.canAddConnection(rearVideoConnection), multiSession.canAddConnection(frontVideoConnection) else {
+        guard multiSession.canAddConnection(rearVideoConnection) else {
             throw DashCamError.couldNotAddConnection
         }
 
         multiSession.addConnection(rearVideoConnection)
-        multiSession.addConnection(frontVideoConnection)
 
-        if frontVideoConnection.isVideoMirroringSupported {
-            frontVideoConnection.automaticallyAdjustsVideoMirroring = false
-            frontVideoConnection.isVideoMirrored = false
+        if let frontInput,
+           let frontPort = frontInput.ports.first(where: { $0.mediaType == .video }) {
+            let frontVideoConnection = AVCaptureConnection(inputPorts: [frontPort], output: frontVideoOutput)
+            guard multiSession.canAddConnection(frontVideoConnection) else {
+                throw DashCamError.couldNotAddConnection
+            }
+
+            multiSession.addConnection(frontVideoConnection)
+
+            if frontVideoConnection.isVideoMirroringSupported {
+                frontVideoConnection.automaticallyAdjustsVideoMirroring = false
+                frontVideoConnection.isVideoMirrored = false
+            }
         }
 
         if includeAudio, let micDevice = AVCaptureDevice.default(for: .audio) {
@@ -438,7 +468,7 @@ extension DashCamController {
                     }
                 }
 
-                if self.multiCamSupported, let frontDevice = self.frontVideoInput?.device {
+                if self.isFrontCameraCaptureActive, let frontDevice = self.frontVideoInput?.device {
                     try self.setMultiCamFormatIfPossible(
                         for: frontDevice,
                         maxWidth: Int32(self.frontTargetQuality.size.width),
@@ -450,11 +480,17 @@ extension DashCamController {
                     let rearFPS = Int(self.rearTargetFrameRate)
                     let frontFPS = Int(self.frontTargetFrameRate)
 
-                    if self.multiCamSupported {
+                    if self.isFrontCameraCaptureActive {
                         if self.quality == .p4K {
                             self.detailText = "4K rear mode ready. Rear capped to \(rearFPS) fps. Front capped to \(frontFPS) fps."
                         } else {
                             self.detailText = "Capture quality updated. Rear capped to \(rearFPS) fps. Front capped to \(frontFPS) fps."
+                        }
+                    } else if self.multiCamSupported {
+                        if self.quality == .p4K {
+                            self.detailText = "4K rear-only mode ready. Rear capped to \(rearFPS) fps."
+                        } else {
+                            self.detailText = "Rear-only capture updated. Rear capped to \(rearFPS) fps."
                         }
                     } else {
                         self.detailText = self.quality == .p4K ? "4K rear mode ready. Rear capped to \(rearFPS) fps." : "Capture quality updated. Rear capped to \(rearFPS) fps."

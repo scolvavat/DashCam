@@ -257,6 +257,14 @@ final class ActiveRecording {
     // whether front should actually be composited into the pip output for this segment
     
     let includeFrontInPiP: Bool
+
+    // capture timestamps and metadata snapshot used for sidecar records
+
+    let startedAt: Date
+    var finishedAt: Date?
+    let captureSnapshot: DashClipCaptureSnapshot
+    var isProtected: Bool
+    var eventTags: [DashClipEventTag]
     
     init(
         mode: RecordingMode,
@@ -264,7 +272,11 @@ final class ActiveRecording {
         secondaryWriter: RecordingWriter?,
         rearAngle: CGFloat,
         frontAngle: CGFloat,
-        includeFrontInPiP: Bool
+        includeFrontInPiP: Bool,
+        startedAt: Date,
+        captureSnapshot: DashClipCaptureSnapshot,
+        isProtected: Bool = false,
+        eventTags: [DashClipEventTag] = []
     ) {
         self.mode = mode
         self.primaryWriter = primaryWriter
@@ -272,12 +284,26 @@ final class ActiveRecording {
         self.rearAngle = rearAngle
         self.frontAngle = frontAngle
         self.includeFrontInPiP = includeFrontInPiP
+        self.startedAt = startedAt
+        self.captureSnapshot = captureSnapshot
+        self.isProtected = isProtected
+        self.eventTags = eventTags
     }
     
     // convenient way to iterate every writer belonging to this segment
     
     var writers: [RecordingWriter] {
         [primaryWriter, secondaryWriter].compactMap { $0 }
+    }
+
+    func addEvent(tags: [DashClipEventTag], protected shouldProtect: Bool) {
+        isProtected = isProtected || shouldProtect
+        for tag in tags where !eventTags.contains(tag) {
+            eventTags.append(tag)
+        }
+        if isProtected && !eventTags.contains(.protectedClip) {
+            eventTags.insert(.protectedClip, at: 0)
+        }
     }
 }
 

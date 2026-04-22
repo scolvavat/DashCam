@@ -1,0 +1,24 @@
+{
+  "source": "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "DashCam",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 171
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 172
+        }
+      }
+    ]
+  },
+  "version": 1
+}

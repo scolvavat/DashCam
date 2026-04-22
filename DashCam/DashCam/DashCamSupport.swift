@@ -9,7 +9,6 @@ import SwiftUI
 import AVFoundation
 import CoreLocation
 import Combine
-import MapKit
 
 // preview bridge
 
@@ -90,28 +89,23 @@ enum RecordingMode: String, CaseIterable, Identifiable {
     // swiftui identity for pickers and foreach
     
     var id: String { rawValue }
-    
+
+    private var ui: (label: String, short: String) {
+        switch self {
+        case .pipSingleFile:
+            return ("PiP single file", "PiP file")
+        case .dualSeparateFiles:
+            return ("Dual separate files", "Dual files")
+        }
+    }
+
     // full label shown in settings or menus
-    
-    var label: String {
-        switch self {
-        case .pipSingleFile:
-            return "PiP single file"
-        case .dualSeparateFiles:
-            return "Dual separate files"
-        }
-    }
-    
+
+    var label: String { ui.label }
+
     // shorter label used in tighter ui spots
-    
-    var shortLabel: String {
-        switch self {
-        case .pipSingleFile:
-            return "PiP file"
-        case .dualSeparateFiles:
-            return "Dual files"
-        }
-    }
+
+    var shortLabel: String { ui.short }
 }
 
 // video quality
@@ -139,51 +133,31 @@ enum DashVideoQuality: String, CaseIterable, Identifiable {
     // swiftui identity for menus and pickers
     
     var id: String { rawValue }
-    
+
+    private var config: (label: String, size: CGSize, bitRate: Int) {
+        switch self {
+        case .p480:
+            return ("480p", CGSize(width: 854, height: 480), 1_500_000)
+        case .p720:
+            return ("720p", CGSize(width: 1280, height: 720), 3_000_000)
+        case .p1080:
+            return ("1080p", CGSize(width: 1920, height: 1080), 6_000_000)
+        case .p4K:
+            return ("4K rear", CGSize(width: 3840, height: 2160), 14_000_000)
+        }
+    }
+
     // user facing label
-    
-    var label: String {
-        switch self {
-        case .p480:
-            return "480p"
-        case .p720:
-            return "720p"
-        case .p1080:
-            return "1080p"
-        case .p4K:
-            return "4K rear"
-        }
-    }
-    
+
+    var label: String { config.label }
+
     // render canvas size used by the writer
-    
-    var size: CGSize {
-        switch self {
-        case .p480:
-            return CGSize(width: 854, height: 480)
-        case .p720:
-            return CGSize(width: 1280, height: 720)
-        case .p1080:
-            return CGSize(width: 1920, height: 1080)
-        case .p4K:
-            return CGSize(width: 3840, height: 2160)
-        }
-    }
-    
+
+    var size: CGSize { config.size }
+
     // target bitrate for the output writer
-    
-    var bitRate: Int {
-        switch self {
-        case .p480:
-            return 1_500_000
-        case .p720:
-            return 3_000_000
-        case .p1080:
-            return 6_000_000
-        case .p4K:
-            return 14_000_000
-        }
-    }
+
+    var bitRate: Int { config.bitRate }
     
     // helper quality for the front stream when rear is using 4k
     
@@ -214,23 +188,17 @@ enum RearLensOption: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var label: String {
+    private var ui: (label: String, short: String) {
         switch self {
         case .wide:
-            return "Rear 1x"
+            return ("Rear 1x", "1x")
         case .ultraWide:
-            return "Rear 0.5x"
+            return ("Rear 0.5x", "0.5x")
         }
     }
 
-    var shortLabel: String {
-        switch self {
-        case .wide:
-            return "1x"
-        case .ultraWide:
-            return "0.5x"
-        }
-    }
+    var label: String { ui.label }
+    var shortLabel: String { ui.short }
 }
 
 // frame rate
@@ -275,31 +243,51 @@ enum DashBitrateProfile: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var label: String {
+    private var config: (label: String, multiplier: Double) {
         switch self {
         case .veryLow:
-            return "Very low"
+            return ("Very low", 0.4)
         case .low:
-            return "Low"
+            return ("Low", 0.55)
         case .balanced:
-            return "Balanced"
+            return ("Balanced", 0.75)
         case .high:
-            return "High"
+            return ("High", 1.0)
         }
     }
 
-    var multiplier: Double {
+    var label: String { config.label }
+    var multiplier: Double { config.multiplier }
+}
+
+// crash sensitivity
+
+// this controls how strong a motion spike must be before we flag a likely impact
+
+enum DashCrashSensitivity: String, CaseIterable, Identifiable {
+
+    case low
+    case balanced
+    case high
+
+    var id: String { rawValue }
+
+    private var config: (label: String, threshold: Double) {
         switch self {
-        case .veryLow:
-            return 0.4
         case .low:
-            return 0.55
+            return ("Low sensitivity", 2.6)
         case .balanced:
-            return 0.75
+            return ("Balanced sensitivity", 2.1)
         case .high:
-            return 1.0
+            return ("High sensitivity", 1.7)
         }
     }
+
+    var label: String { config.label }
+
+    // threshold in g-force from user acceleration magnitude
+
+    var impactThresholdG: Double { config.threshold }
 }
 
 // clip length
@@ -327,6 +315,19 @@ enum DashClipLength: Int, CaseIterable, Identifiable {
     // swiftui identity
     
     var id: Int { rawValue }
+
+    private var ui: (label: String, short: String) {
+        switch self {
+        case .s15:
+            return ("15 second clips", "15s clips")
+        case .s30:
+            return ("30 second clips", "30s clips")
+        case .s60:
+            return ("1 minute clips", "1m clips")
+        case .s120:
+            return ("2 minute clips", "2m clips")
+        }
+    }
     
     // seconds as timeinterval for timers and scheduling
     
@@ -336,33 +337,43 @@ enum DashClipLength: Int, CaseIterable, Identifiable {
     
     // full label for settings
     
-    var label: String {
-        switch self {
-        case .s15:
-            return "15 second clips"
-        case .s30:
-            return "30 second clips"
-        case .s60:
-            return "1 minute clips"
-        case .s120:
-            return "2 minute clips"
-        }
-    }
+    var label: String { ui.label }
     
     // short label for compact ui chips
     
-    var shortLabel: String {
+    var shortLabel: String { ui.short }
+}
+
+// retro buffer length
+
+// this controls how far back the retro-save button should reach when the user
+// taps Record after something already happened.
+
+enum DashRetroBufferLength: Int, CaseIterable, Identifiable {
+
+    case s30 = 30
+    case s60 = 60
+    case s120 = 120
+
+    var id: Int { rawValue }
+
+    private var ui: (label: String, short: String) {
         switch self {
-        case .s15:
-            return "15s clips"
         case .s30:
-            return "30s clips"
+            return ("30 second buffer", "30s")
         case .s60:
-            return "1m clips"
+            return ("1 minute buffer", "1m")
         case .s120:
-            return "2m clips"
+            return ("2 minute buffer", "2m")
         }
     }
+
+    var seconds: TimeInterval {
+        TimeInterval(rawValue)
+    }
+
+    var label: String { ui.label }
+    var shortLabel: String { ui.short }
 }
 
 // storage cap
@@ -390,6 +401,19 @@ enum DashStorageCap: Int, CaseIterable, Identifiable {
     // swiftui identity
     
     var id: Int { rawValue }
+
+    private var ui: (label: String, short: String) {
+        switch self {
+        case .gb2:
+            return ("2 GB cap", "2 GB")
+        case .gb5:
+            return ("5 GB cap", "5 GB")
+        case .gb10:
+            return ("10 GB cap", "10 GB")
+        case .gb20:
+            return ("20 GB cap", "20 GB")
+        }
+    }
     
     // raw byte count used by cleanup logic
     
@@ -399,32 +423,132 @@ enum DashStorageCap: Int, CaseIterable, Identifiable {
     
     // full label for settings
     
-    var label: String {
-        switch self {
-        case .gb2:
-            return "2 GB cap"
-        case .gb5:
-            return "5 GB cap"
-        case .gb10:
-            return "10 GB cap"
-        case .gb20:
-            return "20 GB cap"
-        }
-    }
+    var label: String { ui.label }
     
     // short label for compact ui
     
-    var shortLabel: String {
+    var shortLabel: String { ui.short }
+}
+
+enum DashClipSource: String, Codable, Hashable {
+    case recordingSegment
+    case snapshotPhoto
+}
+
+enum DashClipEventTag: String, Codable, Hashable, CaseIterable, Identifiable {
+    case protectedClip
+    case manualSave
+    case crash
+    case routeLinked
+
+    var id: String { rawValue }
+
+    var title: String {
         switch self {
-        case .gb2:
-            return "2 GB"
-        case .gb5:
-            return "5 GB"
-        case .gb10:
-            return "10 GB"
-        case .gb20:
-            return "20 GB"
+        case .protectedClip:
+            return "Protected"
+        case .manualSave:
+            return "Manual Save"
+        case .crash:
+            return "Crash"
+        case .routeLinked:
+            return "Route"
         }
+    }
+}
+
+struct DashClipCoordinate: Codable, Hashable {
+    let latitude: Double
+    let longitude: Double
+
+    init(_ coordinate: CLLocationCoordinate2D) {
+        latitude = coordinate.latitude
+        longitude = coordinate.longitude
+    }
+
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
+
+struct DashClipRouteContext: Codable, Hashable {
+    let title: String
+    let subtitle: String
+
+    var line: String {
+        subtitle.isEmpty ? title : "\(title) • \(subtitle)"
+    }
+}
+
+struct DashClipCaptureSnapshot: Codable, Hashable {
+    let recordedAt: Date
+    let coordinate: DashClipCoordinate?
+    let speedMetersPerSecond: Double?
+    let headingDegrees: Double?
+    let route: DashClipRouteContext?
+}
+
+struct DashClipMetadata: Codable, Hashable {
+    let mediaFileName: String
+    let source: DashClipSource
+    let startedAt: Date
+    let endedAt: Date
+    let recordingMode: String?
+    let quality: String?
+    let rearLens: String?
+    let durationSeconds: Double?
+    let captureSnapshot: DashClipCaptureSnapshot
+    var isProtected: Bool
+    var eventTags: [DashClipEventTag]
+
+    var effectiveTags: [DashClipEventTag] {
+        var tags = eventTags
+        if isProtected && !tags.contains(.protectedClip) {
+            tags.insert(.protectedClip, at: 0)
+        }
+        return tags
+    }
+
+    func contains(_ tag: DashClipEventTag) -> Bool {
+        effectiveTags.contains(tag)
+    }
+
+    mutating func add(tags newTags: [DashClipEventTag], protected shouldProtect: Bool) {
+        isProtected = isProtected || shouldProtect
+        for tag in newTags where !eventTags.contains(tag) {
+            eventTags.append(tag)
+        }
+        if isProtected && !eventTags.contains(.protectedClip) {
+            eventTags.insert(.protectedClip, at: 0)
+        }
+    }
+}
+
+enum DashClipMetadataStore {
+    static func metadataURL(for mediaURL: URL) -> URL {
+        mediaURL.appendingPathExtension("json")
+    }
+
+    static func load(for mediaURL: URL) -> DashClipMetadata? {
+        let url = metadataURL(for: mediaURL)
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return try? JSONDecoder().decode(DashClipMetadata.self, from: data)
+    }
+
+    static func save(_ metadata: DashClipMetadata, for mediaURL: URL) throws {
+        let url = metadataURL(for: mediaURL)
+        let data = try JSONEncoder().encode(metadata)
+        try data.write(to: url, options: .atomic)
+    }
+
+    static func update(for mediaURL: URL, mutate: (inout DashClipMetadata) -> Void) {
+        guard var metadata = load(for: mediaURL) else { return }
+        mutate(&metadata)
+        try? save(metadata, for: mediaURL)
+    }
+
+    static func remove(for mediaURL: URL) {
+        try? FileManager.default.removeItem(at: metadataURL(for: mediaURL))
     }
 }
 
@@ -443,6 +567,10 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
     // nil means no fix has arrived yet
 
     @Published var currentCoordinate: CLLocationCoordinate2D?
+
+    // full last location sample for services that need timestamp and distance math
+
+    @Published var latestLocation: CLLocation?
     
     // latest speed in meters per second
     
@@ -486,17 +614,11 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
     func start() {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            manager.startUpdatingLocation()
-            if CLLocationManager.headingAvailable() {
-                manager.startUpdatingHeading()
-            }
+            startLocationUpdates()
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
         default:
-            coordinateText = "GPS permission denied"
-            currentCoordinate = nil
-            speedMetersPerSecond = nil
-            headingDegrees = nil
+            resetForDeniedPermission()
         }
     }
     
@@ -505,6 +627,7 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
     func stop() {
         manager.stopUpdatingLocation()
         manager.stopUpdatingHeading()
+        latestLocation = nil
         speedMetersPerSecond = nil
         headingDegrees = nil
     }
@@ -514,17 +637,11 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            manager.startUpdatingLocation()
-            if CLLocationManager.headingAvailable() {
-                manager.startUpdatingHeading()
-            }
+            startLocationUpdates()
         case .notDetermined:
             break
         default:
-            coordinateText = "GPS permission denied"
-            currentCoordinate = nil
-            speedMetersPerSecond = nil
-            headingDegrees = nil
+            resetForDeniedPermission()
         }
     }
     
@@ -534,24 +651,47 @@ final class DashLocationManager: NSObject, ObservableObject, CLLocationManagerDe
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        coordinateText = String(format: "%.5f, %.5f", location.coordinate.latitude, location.coordinate.longitude)
-        currentCoordinate = location.coordinate
-        speedMetersPerSecond = location.speed >= 0 ? location.speed : nil
+        DispatchQueue.main.async {
+            self.coordinateText = String(format: "%.5f, %.5f", location.coordinate.latitude, location.coordinate.longitude)
+            self.currentCoordinate = location.coordinate
+            self.latestLocation = location
+            self.speedMetersPerSecond = location.speed >= 0 ? location.speed : nil
 
+            self.appendBreadcrumbIfNeeded(for: location)
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        let heading = newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading
+        DispatchQueue.main.async {
+            self.headingDegrees = heading >= 0 ? heading : nil
+        }
+    }
+
+    private func startLocationUpdates() {
+        manager.startUpdatingLocation()
+        if CLLocationManager.headingAvailable() {
+            manager.startUpdatingHeading()
+        }
+    }
+
+    private func resetForDeniedPermission() {
+        coordinateText = "GPS permission denied"
+        currentCoordinate = nil
+        latestLocation = nil
+        speedMetersPerSecond = nil
+        headingDegrees = nil
+    }
+
+    private func appendBreadcrumbIfNeeded(for location: CLLocation) {
         if let last = breadcrumbCoordinates.last {
             let lastLocation = CLLocation(latitude: last.latitude, longitude: last.longitude)
-            let shouldAppend = location.distance(from: lastLocation) >= breadcrumbDistanceThreshold
-            guard shouldAppend else { return }
+            guard location.distance(from: lastLocation) >= breadcrumbDistanceThreshold else { return }
         }
 
         breadcrumbCoordinates.append(location.coordinate)
         if breadcrumbCoordinates.count > breadcrumbMaxPoints {
             breadcrumbCoordinates.removeFirst(breadcrumbCoordinates.count - breadcrumbMaxPoints)
         }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        let heading = newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading
-        headingDegrees = heading >= 0 ? heading : nil
     }
 }

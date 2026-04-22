@@ -1,0 +1,136 @@
+{
+  "source": "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamClips.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Clips",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 127
+        }
+      },
+      {
+        "comment": "",
+        "key": "Media type",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 227
+        }
+      },
+      {
+        "comment": "",
+        "key": "Close",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 134
+        }
+      },
+      {
+        "comment": "",
+        "key": "No saved media yet",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 188
+        }
+      },
+      {
+        "comment": "",
+        "key": "Saved videos and rear snapshots will show up here.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 191
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show all clips",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 216
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pick a Day",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 352
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clip day",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 330
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show clips saved on this day.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 343
+        }
+      },
+      {
+        "comment": "",
+        "key": "No saved clips were found on this day.",
+        "location": {
+          "startingColumn": 82,
+          "startingLine": 343
+        }
+      },
+      {
+        "comment": "",
+        "key": "Close",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 356
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show all",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 362
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show day",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 369
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ • %@",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 405
+        }
+      },
+      {
+        "comment": "",
+        "key": "Player",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 488
+        }
+      },
+      {
+        "comment": "",
+        "key": "Photo",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 488
+        }
+      }
+    ]
+  },
+  "version": 1
+}

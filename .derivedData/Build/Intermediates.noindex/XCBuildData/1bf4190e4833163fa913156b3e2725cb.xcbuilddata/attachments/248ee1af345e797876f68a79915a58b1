@@ -1,0 +1,159 @@
+{
+  "" : {
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCam-primary.dia",
+    "emit-module-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCam-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCam-primary-emit-module.dia",
+    "pch" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCam-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCam-primary.swiftdeps"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/ContentView.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/ContentView.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/ContentView.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/ContentView.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/ContentView.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/ContentView.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/ContentView~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamApp.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamApp.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamApp.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamApp.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamApp.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamApp.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamApp.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamApp.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamApp~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamClips.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamClips.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamClips.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamClips.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamClips.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamClips.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamClips.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamClips.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamClips~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamController+Capture.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Capture.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Capture.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Capture.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Capture.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Capture.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Capture.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Capture.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Capture~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamController+Rendering.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Rendering.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Rendering.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Rendering.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Rendering.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Rendering.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Rendering.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Rendering.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Rendering~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamController+Session.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Session.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Session.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Session.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Session.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Session.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Session.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Session.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Session~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamController+Telemetry.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Telemetry.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Telemetry.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Telemetry.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Telemetry.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Telemetry.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Telemetry.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Telemetry.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController+Telemetry~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamController.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamController~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamNavigation.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamNavigation.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamNavigation.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamNavigation.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamNavigation.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamNavigation.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamNavigation.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamNavigation.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamNavigation~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamPresenceAndCrash.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamPresenceAndCrash.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamPresenceAndCrash.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamPresenceAndCrash.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamPresenceAndCrash.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamPresenceAndCrash.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamPresenceAndCrash.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamPresenceAndCrash.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamPresenceAndCrash~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamRecording.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamRecording.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamRecording.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamRecording.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamRecording.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamRecording.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamRecording.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamRecording.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamRecording~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamSupport.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamSupport.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamSupport.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamSupport.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamSupport.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamSupport.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamSupport.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamSupport.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamSupport~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamView.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamView.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamView.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamView.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamView.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamView.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamView.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamView.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/DashCamView~partial.swiftmodule"
+  },
+  "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/settings.swift" : {
+    "const-values" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/settings.swiftconstvalues",
+    "dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/settings.d",
+    "diagnostics" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/settings.dia",
+    "index-unit-output-path" : "/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/settings.o",
+    "llvm-bc" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/settings.bc",
+    "object" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/settings.o",
+    "swift-dependencies" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/settings.swiftdeps",
+    "swiftmodule" : "/Users/lenovothinkpad/Desktop/DashCam/.derivedData/Build/Intermediates.noindex/DashCam.build/Debug-iphonesimulator/DashCam.build/Objects-normal/x86_64/settings~partial.swiftmodule"
+  }
+}

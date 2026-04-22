@@ -23,20 +23,7 @@ struct DashCamSettingsView: View {
     // keep picker and toggle interaction local to this screen so live camera
     // status updates do not fight with the controls while the user is tapping.
 
-    @State private var draftRecordingMode: RecordingMode = .pipSingleFile
-    @State private var draftQuality: DashVideoQuality = .p720
-    @State private var draftBitrateProfile: DashBitrateProfile = .balanced
-    @State private var draftClipLength: DashClipLength = .s30
-    @State private var draftStorageCap: DashStorageCap = .gb5
-    @State private var draftFrameRate: DashFrameRate = .fps24
-    @State private var draftAutoStartBySpeed: Bool = false
-    @State private var draftAutoStartThresholdMPH: Double = 5
-    @State private var draftBurnStamp: Bool = true
-    @State private var draftShowFrontPreview: Bool = true
-    @State private var draftShowCompass: Bool = false
-    @State private var draftShowMainStatusBadges: Bool = false
-    @State private var draftShowMainExtraInfo: Bool = false
-    @State private var draftShowMapBackground: Bool = true
+    @State private var draft = SettingsDraft()
     
     var body: some View {
         NavigationStack {
@@ -44,7 +31,9 @@ struct DashCamSettingsView: View {
                 recordingSection
                 loopSection
                 autoStartSection
+                crashSection
                 overlaySection
+                convoySection
                 statusSection
                 actionsSection
             }
@@ -66,46 +55,34 @@ struct DashCamSettingsView: View {
     
     private var recordingSection: some View {
         Section {
-            Picker("Recording mode", selection: $draftRecordingMode) {
-                ForEach(RecordingMode.allCases) { mode in
-                    Text(mode.label).tag(mode)
-                }
-            }
-            .pickerStyle(.menu)
-            .onChange(of: draftRecordingMode) { _, newValue in
-                camera.recordingMode = newValue
-            }
+            draftSelectionRow("Recording mode", values: RecordingMode.allCases, draft: \.recordingMode, camera: \.recordingMode) { $0.label }
+            draftSelectionRow("Rear lens", values: RearLensOption.allCases, draft: \.rearLens, camera: \.rearLens) { $0.label }
+                .disabled(!camera.canSwitchRearLens)
+            draftSelectionRow("Quality", values: DashVideoQuality.allCases, draft: \.quality, camera: \.quality) { $0.label }
+            draftSelectionRow("Frame rate", values: DashFrameRate.allCases, draft: \.frameRate, camera: \.frameRate) { $0.label }
+            draftSelectionRow("Bitrate", values: DashBitrateProfile.allCases, draft: \.bitrateProfile, camera: \.bitrateProfile) { $0.label }
+            draftToggle("Enable front camera", draft: \.frontCameraEnabled, camera: \.frontCameraEnabled)
+                .disabled(!camera.multiCamSupported || camera.isRecording)
             
-            Picker("Quality", selection: $draftQuality) {
-                ForEach(DashVideoQuality.allCases) { quality in
-                    Text(quality.label).tag(quality)
-                }
-            }
-            .pickerStyle(.menu)
-            .onChange(of: draftQuality) { _, newValue in
-                camera.quality = newValue
+            if camera.multiCamSupported {
+                settingsNote("Turn the front camera off for rear-only recording and lower CPU load. The live front preview stays hidden either way.")
+            } else {
+                settingsNote("This device does not support front and rear capture at the same time, so the front camera toggle is unavailable.")
             }
 
-            Picker("Frame rate", selection: $draftFrameRate) {
-                ForEach(DashFrameRate.allCases) { frameRate in
-                    Text(frameRate.label).tag(frameRate)
-                }
-            }
-            .pickerStyle(.menu)
-            .onChange(of: draftFrameRate) { _, newValue in
-                camera.frameRate = newValue
+            if camera.isRecording {
+                settingsNote("Stop recording before changing the front camera state.")
+                settingsNote("Stop recording before switching the rear lens.")
             }
 
-            Picker("Bitrate", selection: $draftBitrateProfile) {
-                ForEach(DashBitrateProfile.allCases) { profile in
-                    Text(profile.label).tag(profile)
-                }
+            if !draft.frontCameraEnabled {
+                settingsNote("With front camera off, PiP and dual-file modes both record the rear camera only.")
             }
-            .pickerStyle(.menu)
-            .onChange(of: draftBitrateProfile) { _, newValue in
-                camera.bitrateProfile = newValue
+
+            if !camera.isUltraWideAvailable {
+                settingsNote("Ultra-wide is not available on this device, so rear lens stays on 1x.")
             }
-            
+
             settingsNote("Quality and mode changes apply to the next new segment or the next recording start.")
         } header: {
             Text("Recording")
@@ -114,27 +91,14 @@ struct DashCamSettingsView: View {
     
     private var loopSection: some View {
         Section {
-            Picker("Clip length", selection: $draftClipLength) {
-                ForEach(DashClipLength.allCases) { clipLength in
-                    Text(clipLength.label).tag(clipLength)
-                }
-            }
-            .pickerStyle(.menu)
-            .onChange(of: draftClipLength) { _, newValue in
-                camera.clipLength = newValue
-            }
-            
-            Picker("Storage cap", selection: $draftStorageCap) {
-                ForEach(DashStorageCap.allCases) { storageCap in
-                    Text(storageCap.label).tag(storageCap)
-                }
-            }
-            .pickerStyle(.menu)
-            .onChange(of: draftStorageCap) { _, newValue in
-                camera.storageCap = newValue
-            }
+            draftSelectionRow("Clip length", values: DashClipLength.allCases, draft: \.clipLength, camera: \.clipLength) { $0.label }
+            draftSelectionRow("Retro buffer", values: DashRetroBufferLength.allCases, draft: \.retroBufferLength, camera: \.retroBufferLength) { $0.label }
+            draftSelectionRow("Storage cap", values: DashStorageCap.allCases, draft: \.storageCap, camera: \.storageCap) { $0.label }
             
             settingsValueRow(title: "Current loop status", value: camera.loopStatusText)
+            settingsNote("Retro buffer controls how far back Record reaches: 30 seconds, 1 minute, or 2 minutes.")
+            settingsNote("The rolling buffer stays temporary. Only clips you protect with Record, Save Moment, or crash detection are moved into Clips.")
+            settingsNote("When you tap Record, DashCam closes the current buffered segment immediately so the saved clip appears in Clips right away instead of waiting for the next segment rollover.")
         } header: {
             Text("Loop storage")
         }
@@ -144,24 +108,15 @@ struct DashCamSettingsView: View {
         Section {
             let thresholdValues = [5.0, 10.0, 15.0, 20.0, 25.0]
 
-            Toggle("Auto start by speed", isOn: $draftAutoStartBySpeed)
-                .onChange(of: draftAutoStartBySpeed) { _, newValue in
-                    camera.autoStartBySpeed = newValue
-                }
+            draftToggle("Auto start by speed", draft: \.autoStartBySpeed, camera: \.autoStartBySpeed)
 
-            Picker("Start threshold", selection: $draftAutoStartThresholdMPH) {
-                ForEach(thresholdValues, id: \.self) { mph in
-                    Text("\(Int(mph)) mph").tag(mph)
-                }
+            draftSelectionRow("Start threshold", values: thresholdValues, draft: \.autoStartThresholdMPH, camera: \.autoStartThresholdMPH) {
+                "\(Int($0)) mph"
             }
-            .pickerStyle(.menu)
-            .disabled(!draftAutoStartBySpeed)
-            .onChange(of: draftAutoStartThresholdMPH) { _, newValue in
-                camera.autoStartThresholdMPH = newValue
-            }
+            .disabled(!draft.autoStartBySpeed)
 
             settingsValueRow(title: "Live speed", value: camera.speedStatusText)
-            settingsNote("Foreground only. If the app is backgrounded or closed, it stops recording and ignores speed updates.")
+            settingsNote("Foreground only. If the speed threshold is reached, the app now protects the buffered minute first, then keeps saving new segments until speed drops back below the stop threshold.")
         } header: {
             Text("Auto start")
         }
@@ -169,37 +124,12 @@ struct DashCamSettingsView: View {
 
     private var overlaySection: some View {
         Section {
-            Toggle("Burn date, time, and GPS on video", isOn: $draftBurnStamp)
-                .onChange(of: draftBurnStamp) { _, newValue in
-                    camera.burnStamp = newValue
-                }
-
-            Toggle("Show front PiP preview", isOn: $draftShowFrontPreview)
-                .onChange(of: draftShowFrontPreview) { _, newValue in
-                    camera.showFrontPreview = newValue
-                }
-
-            Toggle("Use map as main background", isOn: $draftShowMapBackground)
-                .onChange(of: draftShowMapBackground) { _, newValue in
-                    camera.showMapBackground = newValue
-                }
-
-            Toggle("Show compass", isOn: $draftShowCompass)
-                .onChange(of: draftShowCompass) { _, newValue in
-                    camera.showCompass = newValue
-                }
-
-            Toggle("Show main screen status badges", isOn: $draftShowMainStatusBadges)
-                .onChange(of: draftShowMainStatusBadges) { _, newValue in
-                    camera.showMainStatusBadges = newValue
-                }
-
-            Toggle("Show extra main screen info", isOn: $draftShowMainExtraInfo)
-                .onChange(of: draftShowMainExtraInfo) { _, newValue in
-                    camera.showMainExtraInfo = newValue
-                }
+            draftToggle("Burn date, time, and GPS on video", draft: \.burnStamp, camera: \.burnStamp)
+            draftToggle("Use map as main background", draft: \.showMapBackground, camera: \.showMapBackground)
+            draftToggle("Show compass", draft: \.showCompass, camera: \.showCompass)
+            draftToggle("Show extra main screen info", draft: \.showMainExtraInfo, camera: \.showMainExtraInfo)
             
-            settingsNote("PiP preview only changes the small on-screen front camera box. Recording mode still controls whether the app saves one PiP file or two separate files.")
+            settingsNote("The live front preview is hidden to keep recording smoother. Recording mode still controls whether the app saves one PiP file or two separate files.")
         } header: {
             Text("Overlay and preview")
         }
@@ -207,13 +137,59 @@ struct DashCamSettingsView: View {
     
     private var statusSection: some View {
         Section {
-            settingsValueRow(title: "Camera", value: camera.statusText)
-            settingsValueRow(title: "Detail", value: camera.detailText)
-            settingsValueRow(title: "Last saved", value: camera.savedClipText)
-            settingsValueRow(title: "Live stamp", value: camera.liveStampText)
-            settingsValueRow(title: "Speed", value: camera.speedStatusText)
+            ForEach(statusRows, id: \.title) { row in
+                settingsValueRow(title: row.title, value: row.value)
+            }
         } header: {
             Text("Status")
+        }
+    }
+
+    private var crashSection: some View {
+        Section {
+            draftToggle("Enable crash detection", draft: \.crashDetectionEnabled, camera: \.crashDetectionEnabled)
+
+            draftSelectionRow("Sensitivity", values: DashCrashSensitivity.allCases, draft: \.crashSensitivity, camera: \.crashSensitivity) {
+                $0.label
+            }
+            .disabled(!draft.crashDetectionEnabled)
+
+            settingsValueRow(title: "Live status", value: camera.crashStatusText)
+            settingsNote("Foreground only. This is a motion-spike detector and can trigger on potholes or harsh bumps.")
+        } header: {
+            Text("Crash detection")
+        }
+    }
+
+    private var convoySection: some View {
+        Section {
+            draftToggle("Enable convoy live map", draft: \.convoyEnabled, camera: \.convoyEnabled)
+
+            TextField("Server URL", text: draftBinding(\.convoyServerURL))
+                .textInputAutocapitalization(.never)
+                .disableAutocorrection(true)
+                .keyboardType(.URL)
+                .onChange(of: draft.convoyServerURL) { _, newValue in
+                    camera.convoyServerURL = newValue
+                }
+
+            TextField("Session code", text: draftBinding(\.convoySessionCode))
+                .textInputAutocapitalization(.never)
+                .disableAutocorrection(true)
+                .onChange(of: draft.convoySessionCode) { _, newValue in
+                    camera.convoySessionCode = newValue
+                }
+
+            TextField("Display name", text: draftBinding(\.convoyDisplayName))
+                .disableAutocorrection(true)
+                .onChange(of: draft.convoyDisplayName) { _, newValue in
+                    camera.convoyDisplayName = newValue
+                }
+
+            settingsValueRow(title: "Live status", value: camera.convoyStatusText)
+            settingsNote("Use ws://127.0.0.1:8787 for simulator on your Mac. Use a tunnel URL (wss://...) for physical phones.")
+        } header: {
+            Text("Convoy")
         }
     }
     
@@ -259,20 +235,148 @@ struct DashCamSettingsView: View {
             .fixedSize(horizontal: false, vertical: true)
     }
 
+    private var statusRows: [(title: String, value: String)] {
+        [
+            ("Camera", camera.statusText),
+            ("Detail", camera.detailText),
+            ("Last saved", camera.savedClipText),
+            ("Live stamp", camera.liveStampText),
+            ("Speed", camera.speedStatusText),
+            ("Crash detection", camera.crashStatusText),
+            ("Convoy", camera.convoyStatusText)
+        ]
+    }
+
+    private func draftBinding<Value>(_ keyPath: WritableKeyPath<SettingsDraft, Value>) -> Binding<Value> {
+        Binding(
+            get: { draft[keyPath: keyPath] },
+            set: { draft[keyPath: keyPath] = $0 }
+        )
+    }
+
+    private func draftToggle(
+        _ title: String,
+        draft draftKeyPath: WritableKeyPath<SettingsDraft, Bool>,
+        camera cameraKeyPath: ReferenceWritableKeyPath<DashCamController, Bool>
+    ) -> some View {
+        Toggle(title, isOn: draftBinding(draftKeyPath))
+            .onChange(of: draft[keyPath: draftKeyPath]) { _, newValue in
+                camera[keyPath: cameraKeyPath] = newValue
+            }
+    }
+
+    private func draftSelectionRow<Value: Hashable>(
+        _ title: String,
+        values: [Value],
+        draft draftKeyPath: WritableKeyPath<SettingsDraft, Value>,
+        camera cameraKeyPath: ReferenceWritableKeyPath<DashCamController, Value>,
+        label: @escaping (Value) -> String
+    ) -> some View {
+        NavigationLink {
+            SettingsSelectionList(
+                title: title,
+                values: values,
+                selection: Binding(
+                    get: { draft[keyPath: draftKeyPath] },
+                    set: { newValue in
+                        draft[keyPath: draftKeyPath] = newValue
+                        camera[keyPath: cameraKeyPath] = newValue
+                    }
+                ),
+                label: label
+            )
+        } label: {
+            HStack {
+                Text(title)
+                Spacer()
+                Text(label(draft[keyPath: draftKeyPath]))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     private func syncDraftsFromCamera() {
-        draftRecordingMode = camera.recordingMode
-        draftQuality = camera.quality
-        draftBitrateProfile = camera.bitrateProfile
-        draftClipLength = camera.clipLength
-        draftStorageCap = camera.storageCap
-        draftFrameRate = camera.frameRate
-        draftAutoStartBySpeed = camera.autoStartBySpeed
-        draftAutoStartThresholdMPH = camera.autoStartThresholdMPH
-        draftBurnStamp = camera.burnStamp
-        draftShowFrontPreview = camera.showFrontPreview
-        draftShowMapBackground = camera.showMapBackground
-        draftShowCompass = camera.showCompass
-        draftShowMainStatusBadges = camera.showMainStatusBadges
-        draftShowMainExtraInfo = camera.showMainExtraInfo
+        draft = SettingsDraft(camera: camera)
+    }
+
+    private struct SettingsDraft {
+        var recordingMode: RecordingMode = .pipSingleFile
+        var frontCameraEnabled: Bool = true
+        var rearLens: RearLensOption = .wide
+        var quality: DashVideoQuality = .p720
+        var bitrateProfile: DashBitrateProfile = .balanced
+        var clipLength: DashClipLength = .s30
+        var retroBufferLength: DashRetroBufferLength = .s60
+        var storageCap: DashStorageCap = .gb5
+        var frameRate: DashFrameRate = .fps24
+        var autoStartBySpeed: Bool = false
+        var autoStartThresholdMPH: Double = 5
+        var burnStamp: Bool = true
+        var showCompass: Bool = false
+        var showMainExtraInfo: Bool = false
+        var showMapBackground: Bool = true
+        var convoyEnabled: Bool = false
+        var convoyServerURL: String = "ws://127.0.0.1:8787"
+        var convoySessionCode: String = "test-drive"
+        var convoyDisplayName: String = ""
+        var crashDetectionEnabled: Bool = false
+        var crashSensitivity: DashCrashSensitivity = .balanced
+
+        init() {}
+
+        init(camera: DashCamController) {
+            recordingMode = camera.recordingMode
+            frontCameraEnabled = camera.frontCameraEnabled
+            rearLens = camera.rearLens
+            quality = camera.quality
+            bitrateProfile = camera.bitrateProfile
+            clipLength = camera.clipLength
+            retroBufferLength = camera.retroBufferLength
+            storageCap = camera.storageCap
+            frameRate = camera.frameRate
+            autoStartBySpeed = camera.autoStartBySpeed
+            autoStartThresholdMPH = camera.autoStartThresholdMPH
+            burnStamp = camera.burnStamp
+            showCompass = camera.showCompass
+            showMainExtraInfo = camera.showMainExtraInfo
+            showMapBackground = camera.showMapBackground
+            convoyEnabled = camera.convoyEnabled
+            convoyServerURL = camera.convoyServerURL
+            convoySessionCode = camera.convoySessionCode
+            convoyDisplayName = camera.convoyDisplayName
+            crashDetectionEnabled = camera.crashDetectionEnabled
+            crashSensitivity = camera.crashSensitivity
+        }
+    }
+}
+
+private struct SettingsSelectionList<Value: Hashable>: View {
+    @Environment(\.dismiss) private var dismiss
+    let title: String
+    let values: [Value]
+    @Binding var selection: Value
+    let label: (Value) -> String
+
+    var body: some View {
+        List(values, id: \.self) { value in
+            Button {
+                selection = value
+                dismiss()
+            } label: {
+                HStack {
+                    Text(label(value))
+                    Spacer()
+                    if value == selection {
+                        Image(systemName: "checkmark")
+                            .foregroundStyle(.blue)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

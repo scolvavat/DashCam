@@ -1,0 +1,12 @@
+{
+  "name": "dashcam-convoy-server",
+  "version": "1.0.0",
+  "description": "Temporary live convoy presence server for DashCam map mode",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

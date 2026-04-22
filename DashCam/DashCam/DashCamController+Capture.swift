@@ -99,23 +99,14 @@ extension DashCamController: AVCaptureVideoDataOutputSampleBufferDelegate, AVCap
     }
 
     func handleFrontVideoSample(_ sampleBuffer: CMSampleBuffer) {
-        guard multiCamSupported else { return }
+        guard isFrontCameraCaptureActive else { return }
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
         let needsFrontBufferForPiP = recordingMode == .pipSingleFile
         let shouldUpdateFrontBufferForPiP = needsFrontBufferForPiP && shouldUpdateFrontPiPBufferNow()
-        let shouldRefreshFrontPreview = (!isRecording || recordingMode == .pipSingleFile) && shouldQueueFrontPreviewNow()
-
-        // one copied front frame can feed the writer path and the small preview path
-        if shouldUpdateFrontBufferForPiP || shouldRefreshFrontPreview {
+        if shouldUpdateFrontBufferForPiP {
             if let copied = copyPixelBuffer(from: imageBuffer) {
-                if shouldUpdateFrontBufferForPiP {
-                    latestFrontPixelBuffer = copied
-                }
-
-                if shouldRefreshFrontPreview {
-                    queueFrontPreviewImage(from: copied, angle: frontCaptureAngle)
-                }
+                latestFrontPixelBuffer = copied
             }
         }
 

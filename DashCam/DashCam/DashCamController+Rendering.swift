@@ -4,65 +4,6 @@ import CoreImage
 
 extension DashCamController {
 
-    // front preview image
-
-    // this path only builds the small front thumbnail
-    // the real rear preview still lives in the preview layer wrapper
-
-    var frontPreviewMinimumInterval: CFTimeInterval {
-        if isRecording && frameRate == .fps60 {
-            return 0.12
-        }
-
-        return isRecording ? 0.08 : 0.06
-    }
-
-    var currentFrontPreviewTargetSize: CGSize {
-        if isRecording && frameRate == .fps60 {
-            return frontPreviewTargetSizeAt60FPS
-        }
-
-        return frontPreviewTargetSize
-    }
-
-    func shouldQueueFrontPreviewNow() -> Bool {
-        guard showFrontPreview else { return false }
-        guard !isFrontPreviewRenderInFlight else { return false }
-
-        let now = CACurrentMediaTime()
-        return now - lastFrontPreviewPush > frontPreviewMinimumInterval
-    }
-
-    func queueFrontPreviewImage(from pixelBuffer: CVPixelBuffer, angle: CGFloat) {
-        guard showFrontPreview else { return }
-
-        let now = CACurrentMediaTime()
-        guard now - lastFrontPreviewPush > frontPreviewMinimumInterval else { return }
-        guard !isFrontPreviewRenderInFlight else { return }
-
-        lastFrontPreviewPush = now
-        isFrontPreviewRenderInFlight = true
-
-        frontPreviewQueue.async { [weak self] in
-            guard let self else { return }
-
-            let image = self.makeUIImage(
-                from: pixelBuffer,
-                applyingRotationAngle: angle,
-                mirrored: true,
-                targetSize: self.currentFrontPreviewTargetSize
-            )
-
-            DispatchQueue.main.async {
-                self.frontPreviewImage = image
-            }
-
-            self.captureQueue.async {
-                self.isFrontPreviewRenderInFlight = false
-            }
-        }
-    }
-
     func makeUIImage(
         from pixelBuffer: CVPixelBuffer,
         applyingRotationAngle angle: CGFloat,
@@ -310,6 +251,8 @@ extension DashCamController {
     // snapshots
 
     func saveRearPhoto(from pixelBuffer: CVPixelBuffer, angle: CGFloat) {
+        let capturedAt = Date()
+        let snapshot = currentCaptureSnapshot(recordedAt: capturedAt)
         let rotatedImage = applyDiscreteRotation(angle: angle, to: CIImage(cvPixelBuffer: pixelBuffer))
         let finalImage: CIImage
 
@@ -337,6 +280,21 @@ extension DashCamController {
             let folderURL = try photosFolderURL()
             let fileURL = folderURL.appendingPathComponent("DashCam_\(photoTimestampString())_rear.jpg")
             try data.write(to: fileURL, options: .atomic)
+
+            // Photos are explicit user-kept artifacts, so they get the saved
+            // media policy immediately after the atomic write lands on disk.
+            try? Self.applySavedMediaProtection(to: fileURL)
+
+            persistClipMetadata(
+                for: fileURL,
+                source: .snapshotPhoto,
+                startedAt: capturedAt,
+                endedAt: capturedAt,
+                durationSeconds: nil,
+                snapshot: snapshot,
+                protected: false,
+                eventTags: defaultEventTags(for: snapshot)
+            )
 
             DispatchQueue.main.async {
                 self.savedClipText = fileURL.lastPathComponent

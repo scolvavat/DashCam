@@ -1,0 +1,144 @@
+{
+  "source": "/Users/lenovothinkpad/Desktop/DashCam/DashCam/DashCam/DashCamNavigation.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Navigation",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 870
+        }
+      },
+      {
+        "comment": "",
+        "key": "Calculating route...",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 861
+        }
+      },
+      {
+        "comment": "",
+        "key": "Searching...",
+        "location": {
+          "startingColumn": 91,
+          "startingLine": 861
+        }
+      },
+      {
+        "comment": "",
+        "key": "Close",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 874
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear route",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 881
+        }
+      },
+      {
+        "comment": "",
+        "key": "Where do you want to go?",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 902
+        }
+      },
+      {
+        "comment": "",
+        "key": "Turns",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 929
+        }
+      },
+      {
+        "comment": "",
+        "key": "Recent destinations",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 963
+        }
+      },
+      {
+        "comment": "",
+        "key": "Search",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 1007
+        }
+      },
+      {
+        "comment": "",
+        "key": "Suggestions",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 1023
+        }
+      },
+      {
+        "comment": "",
+        "key": "Next",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 948
+        }
+      },
+      {
+        "comment": "",
+        "key": "Route to \"%@\"",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 1012
+        }
+      },
+      {
+        "comment": "",
+        "key": "Search this text directly and build a driving route.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 1013
+        }
+      },
+      {
+        "comment": "",
+        "key": "Search for a destination, reopen a recent route, or pick a saved drive from any day the app recorded location history.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 1044
+        }
+      },
+      {
+        "comment": "",
+        "key": "You have arrived • %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 1075
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ • in %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 1079
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ remaining • arrive %@",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 1084
+        }
+      }
+    ]
+  },
+  "version": 1
+}
